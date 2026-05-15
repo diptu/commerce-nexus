@@ -1,100 +1,151 @@
 # commerce-nexus
-Advanced MERN e-commerce ecosystem with real-time inventory, OTP authentication, and Payment gateway
 
+commerce-nexus is a high-performance, multi-modal e-commerce platform combining a scalable MERN transactional core with an Agentic AI layer (FastAPI + PyTorch).
+
+---
+It enables:
+
+-  Intent-aware product discovery
+- Visual product matching
+- Autonomous shopping workflows
+---
+![Tech Stack](https://skillicons.dev/icons?i=react,tailwind,nodejs,typescript,express,mongodb,redis,fastapi,pytorch,docker,kubernetes,githubactions)
+---
 ## 🧱 Architecture
 ```mermaid
 graph TD
-    subgraph Client_Side [Frontend: React.js & Tailwind]
-        UI[User Interface]
-        State[React Context API]
-        Router[React Router]
+
+    subgraph Client_Layer
+        UI[React Web App]
+        Voice[Voice / Visual Input]
+        AgentUI[AI Shopping Assistant]
     end
 
-    subgraph External_Services [Third-Party APIs]
-        Stripe[Stripe Payment Gateway]
-        Cloudinary[Cloudinary Image Hosting]
-        Mail[Nodemailer / OTP Service]
+    subgraph API_Gateway
+        Gateway[API Gateway / BFF]
     end
 
-    subgraph Server_Side [Backend: Node.js & Express]
-        Auth[JWT & OTP Middleware]
-        Controllers[Business Logic / Controllers]
-        Routes[API Endpoints]
-        Errors[Global Error Handler]
+    subgraph Core_Services
+        Auth[Auth Service - Node.js]
+        Product[Product Service - Node.js]
+        Order[Order Service - Node.js]
+        Inventory[Inventory Service - Node.js]
+        Payment[Payment Service - Node.js]
     end
 
-    subgraph Database_Layer [Data: MongoDB Atlas]
-        Mongoose[Mongoose ODM]
-        Collections[(Collections: Users, Products, Orders)]
+    subgraph AI_Services
+        Search[Semantic Search - FastAPI]
+        Vision[Visual Search - FastAPI]
+        RAG[RAG Assistant - FastAPI]
+        Agent[Agent Orchestrator - FastAPI]
     end
 
-    %% Connections
-    UI <--> State
-    UI <--> Router
-    Router <--> Routes
-    
-    Routes <--> Auth
-    Auth <--> Controllers
-    Controllers <--> Mongoose
-    Mongoose <--> Collections
-    
-    %% Service Integrations
-    Controllers <--> Stripe
-    Controllers <--> Cloudinary
-    Controllers <--> Mail
+    subgraph Data_Layer
+        Mongo[(MongoDB)]
+        Redis[(Redis Cache)]
+        Vector[(Vector DB)]
+    end
+
+    subgraph Messaging
+        Queue[Kafka / RabbitMQ]
+    end
+
+    UI --> Gateway
+    Voice --> Gateway
+    AgentUI --> Gateway
+
+    Gateway --> Auth
+    Gateway --> Product
+    Gateway --> Order
+    Gateway --> Search
+    Gateway --> RAG
+
+    Product --> Mongo
+    Order --> Mongo
+    Inventory --> Redis
+
+    Product --> Queue
+    Queue --> Search
+    Queue --> Vision
+
+    Search --> Vector
+    Vision --> Vector
+    RAG --> Vector
 ```
 
-### 🎨 Frontend
-[![React](https://img.shields.io/badge/React-UI-61DAFB?logo=react&logoColor=black)](https://react.dev)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-Styling-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![React Router](https://img.shields.io/badge/Routing-ReactRouter-CA4245?logo=reactrouter&logoColor=white)](https://reactrouter.com)
+</p>
 
-### ⚙️ Backend
-[![Node.js](https://img.shields.io/badge/Node.js-Runtime-339933?logo=node.js&logoColor=white)](https://nodejs.org)
-[![Express.js](https://img.shields.io/badge/Express.js-API-000000?logo=express&logoColor=white)](https://expressjs.com)
+## Core Features
 
-### 🗄️ Database
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)](https://mongodb.com)
-[![Mongoose](https://img.shields.io/badge/Mongoose-ODM-880000?logo=mongoose&logoColor=white)](https://mongoosejs.com)
+### 🛒 Intelligence-Driven Customer Experience
 
-### 🔐 Auth & Security
-[![JWT](https://img.shields.io/badge/JWT-Auth-black?logo=jsonwebtokens)](https://jwt.io)
-[![Nodemailer](https://img.shields.io/badge/Nodemailer-OTP-009688?logo=gmail&logoColor=white)](https://nodemailer.com)
+1. **Multi-Modal Discovery:**
+- *Semantic Search:* Intent-aware product discovery using vector embeddings
+- *Visual Search:* Image-based product matching via CLIP-style models.
 
-### 💳 Payments & Media
-[![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?logo=stripe&logoColor=white)](https://stripe.com)
-[![Cloudinary](https://img.shields.io/badge/Cloudinary-Media-3448C5?logo=cloudinary&logoColor=white)](https://cloudinary.com)
+2. **Agentic Shopping Assistant:** RAG-powered conversational interface for comparisons, recommendations, and policy queries
+3. **Secure Authentication:** Passwordless OTP login with JWT-based session management
+Cart & Checkout: Persistent cart with Stripe-powered multi-currency transactions
+4. **Order Tracking:** Automated lifecycle updates (Pending → Delivered) with invoices & notifications
+5. **Dynamic UI:** Mobile-first glassmorphism design with real-time inventory sync
 
-## 🚀 Core Features
+## 🛡️ Admin Management & Intelligence
+1. **Inventory Management:** Full CRUD with real-time stock updates
+2. **AI Inventory Intelligence:** Auto-categorization & duplicate detection via embeddings
+Order Pipeline: State-driven orchestration with transactional consistency
+3. **Predictive Analytics:** Sales insights + demand forecasting
+4. **Media Pipeline:** Cloudinary + AI preprocessing (tagging, optimization)
 
-### 🛒 Customer Experience
-- **Dynamic Product Discovery:** Multi-criteria filtering (Price, Category) and real-time search.
-- **Secure Authentication:** Passwordless OTP-based login system for enhanced security.
-- **Cart & Checkout:** Persistent cart state with integrated Stripe Payment Gateway.
-- **Order Tracking:** Automated email confirmations and printable PDF invoices.
-- **Responsive UI:** Dark/Light mode support with a mobile-first glassmorphism design.
+5. **Knowledge Base Management:** Dynamic RAG corpus for assistant training
 
-### 🛡️ Admin Management
-- **Inventory Control:** Full CRUD operations for products with real-time stock updates.
-- **Order Management:** State-driven order pipeline (Pending → Shipped → Delivered).
-- **Data Analytics:** Visualized sales data using interactive charts and metrics.
-- **Media Management:** Cloud-integrated image uploads and automated optimizations.
+## ⚡ Event-Driven AI Pipeline
+Product Created → Queue → Embedding Service → Vector DB
+User Query → API → Vector Search → RAG → LLM → Response
 
+## 🧩 Engineering Highlights
+- **Microservices Architecture:** Decoupled Node.js + FastAPI services
+- **Event-Driven Design:** Kafka/RabbitMQ for async workflows
+- **Saga Pattern:** Distributed transaction handling across services
+- **Circuit Breaker:** Resilience against AI latency/failures
+- **Caching Layer:** Redis for performance optimization
+- **Observability:** OpenTelemetry + centralized logging (ELK)
+- **CI/CD:** Automated pipelines with Docker + Kubernetes
 ## 🛠️ Technical Stack
 
-| Layer | Technology |
-| :--- | :--- |
-| **Frontend** | React.js, Tailwind CSS, Lucide Icons, React Router |
-| **Backend** | Node.js, Express.js |
-| **Database** | MongoDB (Atlas), Mongoose ODM |
-| **Authentication** | JSON Web Tokens (JWT), Nodemailer (OTP) |
-| **Payments** | Stripe API |
-| **Storage** | Cloudinary API |
+| Category        | Technology                                  |
+| --------------- | ------------------------------------------- |
+| **Frontend**    | React, Tailwind CSS                         |
+| **Backend**     | Node.js (Express)                           |
+| **AI Services** | FastAPI, PyTorch, LangChain                 |
+| **Databases**   | MongoDB, Redis, Vector DB (Pinecone/Milvus) |
+| **Messaging**   | Kafka / RabbitMQ                            |
+| **DevOps**      | Docker, Kubernetes, GitHub Actions          |
+
+## ⚙️ Deployment
+### Local Development
+
+```bash
+git clone https://github.com/yourusername/commerce-nexus.git
+cd commerce-nexus
+docker-compose up --build
+```
+
+## Production Checklist
+ [ ] Configure Redis (caching + rate limiting)\
+ [ ] Set up Kafka DLQ (failure handling)\
+ [ ] Enable JWT refresh token rotation\
+ [ ] Configure Vector DB namespaces\
+ [ ] Add monitoring (Prometheus + Grafana)\
 
 
-## 🏗️ Architecture & Engineering
-- **Modular Backend:** Separated routes, controllers, and models for high maintainability.
-- **State Architecture:** Global state management using React Context to handle cart and user sessions.
-- **Middleware Integration:** Custom error handling, authentication guards, and file upload processing.
-- **Security:** Environment variable protection, CORS configuration, and data sanitization.
+ ## 🏗️ Engineering Principles
+- Clean separation of transactional vs intelligence systems
+- Async-first design for scalability
+- AI as a service layer, not tightly coupled
+- Production-first mindset (observability, resilience, CI/CD)
 
+
+## 👨‍💻 Author
+
+Nazmul Alam Diptu
+Software Engineer | AI Systems Enthusiast
