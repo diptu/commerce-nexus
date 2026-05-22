@@ -82,3 +82,42 @@ Microservices
 Event Bus (RabbitMQ/Kafka)
         ↓
 Database per Service
+```
+
+## Structure
+```bash
+services/
+├── identity-service
+├── user-service
+├── catalog-service
+├── inventory-service
+├── pricing-service
+├── cart-service
+├── order-service
+├── payment-service
+├── shipping-service
+├── notification-service
+├── seller-service
+├── search-service
+├── review-service
+├── media-service
+└── analytics-service
+```
+## Phase 1 (MVP)
+- Identity Service
+- Catalog Service
+- Cart Service
+- Order Service
+- Payment Service
+## Phase 2
+- Inventory Service
+- Notification Service
+- Search Service
+## Phase 3
+- Seller Service
+- Shipping Service
+- Pricing Service
+## Phase 4
+- Recommendation Service
+- Analytics Service
+- CMS Service
